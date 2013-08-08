@@ -1,7 +1,6 @@
 import time
 import datetime
 import praw
-import math
 
 global numPosts
 
@@ -15,7 +14,6 @@ def hasKeyword(string, keywords):
 def testSubmission(submission):
     #Submission Variables
     sid = submission.id
-    sub = submission.subreddit.name
     permalink = submission.permalink
     created = submission.created_utc
     score = submission.score
@@ -34,19 +32,18 @@ def testSubmission(submission):
         ratio = ups
     else: 
         ratio = ups / downs
-    #If post is <3 hrs old, points per hour > 200, and up:down >= 3:1
-    if (gap) <= 3 & int(score / gap) > 200 & int(ratio) >= 3:
+    #If post is < 3 hrs old, points per hour > 100, and up:down >= 3:1
+    if (gap) <= 5 & int(score / gap) > 100 & int(ratio) >= 3:
         print(" FOUND {\n" +
             "  ID: " + str(sid) + "\n" +
-            "  SubReddit: " + str(sub) + "\n" +
             "  SCORE: " + str(score) + "\n" +
             "  COMMENTS: " + str(num_comments) + "\n" +
             "  LINK: " + str(permalink) + "\n" +
             "  Posted " + str(gap) + " hour(s)" + " ago.\n" +
             " }"
         )
-        doc = open('links.txt', 'a')
-        if submission.id not in doc:
+        doc = open('C:/Users/Daniel/Documents/GitHub/KarmaPredictor/KarmaPredictor/Base/links.txt', 'w')
+        if str(permalink) not in doc:
             doc.append(str(permalink))
         doc.close()
         return True
@@ -55,15 +52,15 @@ def testSubmission(submission):
 def findProspective(r, numPosts, startingPostLimit):
     #Exceeded specs
     if (numPosts > 2000):
+        print("Limit Exceeded. Stopping...")
         return
     i=0.0
     found=0
     for submission in r.get_front_page(limit=numPosts):
         i+=1
-        if (int(numPosts/2) > i) & (startingPostLimit != numPosts):
-            pass
-        else:
-            if testSubmission(submission): found+=1
+        #If posts have already been covered, skip
+        if (int(numPosts/2) > i) & (startingPostLimit != numPosts): pass
+        elif testSubmission(submission): found+=1
         #Percent Counter
         if i%(numPosts/10) == 0:
             print(str(int((i/numPosts)*100)) + "%")
@@ -75,9 +72,8 @@ def findProspective(r, numPosts, startingPostLimit):
 
 #-------------------Main Script-------------------------
 sleep = 60
-max_searching = 15
-numPosts = 500.0
-startingPostLimit = 500.0
+numPosts = 50.0
+startingPostLimit = 50.0
 reqComments = 100
 if __name__ == "__main__":
     #Login & Connection
