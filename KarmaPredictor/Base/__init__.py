@@ -44,11 +44,11 @@ def testSubmission(submission):
             "  LINK: " + str(permalink) + "\n" +
             "  Posted " + str(gap) + " hour(s)" + " ago.\n" +
             " }"
-            doc = open('links.txt', 'a')
-            if submission.id not in doc:
-                doc.append(str(permalink))
-            doc.close()
         )
+        doc = open('links.txt', 'a')
+        if submission.id not in doc:
+            doc.append(str(permalink))
+        doc.close()
         return True
     return False
 
@@ -81,8 +81,8 @@ startingPostLimit = 500.0
 reqComments = 100
 if __name__ == "__main__":
     #Login & Connection
-    r = praw.Reddit(user_agent="D4G")
-    r.login(username="D4G")
+    r = praw.Reddit(user_agent="github/green131/karmapredictor")
+    r.login()
     keywords = [] #Keywords to check for
     print("Beginning Scan...")
     #Find Up and Coming Submissions
