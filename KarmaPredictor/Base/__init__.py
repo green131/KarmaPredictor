@@ -33,7 +33,7 @@ def testSubmission(submission):
     else: 
         ratio = ups / downs
     #If post is < 3 hrs old, points per hour > 100, and up:down >= 3:1
-    if (gap) <= 5 & int(score / gap) > 100 & int(ratio) >= 3:
+    if (gap) <= 5 & int(score / gap) > 200 & int(ratio) >= 3:
         print(" FOUND {\n" +
             "  ID: " + str(sid) + "\n" +
             "  SCORE: " + str(score) + "\n" +
@@ -42,20 +42,19 @@ def testSubmission(submission):
             "  Posted " + str(gap) + " hour(s)" + " ago.\n" +
             " }"
         )
-        doc = open('C:/Users/Daniel/Documents/GitHub/KarmaPredictor/KarmaPredictor/Base/links.txt', 'w')
-        if str(permalink) not in doc:
-            doc.append(str(permalink))
+        doc = open('C:/Users/Daniel/Documents/GitHub/KarmaPredictor/KarmaPredictor/Base/links.txt', 'a')
+        #if str(permalink) not in doc:
+        doc.write(str(permalink) + "\n")
         doc.close()
         return True
     return False
 
-def findProspective(r, numPosts, startingPostLimit):
+def findProspective(r, found, numPosts, startingPostLimit):
     #Exceeded specs
     if (numPosts > 2000):
         print("Limit Exceeded. Stopping...")
         return
     i=0.0
-    found=0
     for submission in r.get_front_page(limit=numPosts):
         i+=1
         #If posts have already been covered, skip
@@ -68,9 +67,10 @@ def findProspective(r, numPosts, startingPostLimit):
     if (found < 5):
         numPosts*=2
         print("Expanding Search... [posts:" + str(numPosts) + "]")
-        findProspective(r, numPosts, startingPostLimit)
+        findProspective(r, found, numPosts, startingPostLimit)
 
 #-------------------Main Script-------------------------
+found = 0
 sleep = 60
 numPosts = 50.0
 startingPostLimit = 50.0
@@ -82,5 +82,5 @@ if __name__ == "__main__":
     keywords = [] #Keywords to check for
     print("Beginning Scan...")
     #Find Up and Coming Submissions
-    findProspective(r, numPosts, startingPostLimit)
+    findProspective(r, found, numPosts, startingPostLimit)
     print("...Scan Complete")
