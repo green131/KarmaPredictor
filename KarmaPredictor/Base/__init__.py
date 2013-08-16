@@ -1,8 +1,10 @@
 import time
 import datetime
 import praw
+import random
 
 global numPosts
+global rnd
 
 def convertCreated(integer):
     created = time.gmtime(integer)
@@ -81,7 +83,7 @@ def testSubmission(submission, av):
                 "  Posted " + str(dt) + " hour(s)" + " ago.\n" +
                 " }"
             )
-            doc = open('C:/Users/Daniel/Documents/GitHub/KarmaPredictor/KarmaPredictor/Base/links.txt', 'a')
+            doc = open('C:/Users/Daniel/Documents/GitHub/KarmaPredictor/KarmaPredictor/Base/links'+str(rnd)+'.txt', 'a')
             doc.write("[" + str(likely) + "]\t\t" + str(permalink) + "\n")
             doc.close()
             return True
@@ -109,11 +111,15 @@ def findProspective(r, found, numPosts, startingPostLimit, av):
         findProspective(r, found, numPosts, startingPostLimit, av)
 
 #-------------------Main Script-------------------------
+rnd = 0
 found = 0
 opLimit = 40.0
 numPosts = 1000.0
 startingPostLimit = 1000.0
 if __name__ == "__main__":
+    #Create Record Text File
+    rnd = random.randrange(10000, 99999, 1)
+    print("Recording Results to links" + str(rnd) + ".txt")
     #Login & Connection
     r = praw.Reddit(user_agent="github/green131/karmapredictor")
     r.login()
@@ -124,3 +130,4 @@ if __name__ == "__main__":
     #Find Up and Coming Submissions
     findProspective(r, found, numPosts, startingPostLimit, av)
     print("...Scan Complete")
+        
